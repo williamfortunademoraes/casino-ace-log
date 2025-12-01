@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
-import { Wallet, TrendingUp, TrendingDown, Target, Plus } from 'lucide-react';
+import { Wallet, TrendingUp, TrendingDown, Target, Plus, ShieldCheck, AlertTriangle } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import StatCard from '@/components/dashboard/StatCard';
 import RecentBets from '@/components/dashboard/RecentBets';
 import ProfitChart from '@/components/charts/ProfitChart';
-import { apostas, casas, getApostaWithRelations, evolutionData } from '@/data/mockData';
+import { apostas, casas, jogos, getApostaWithRelations, evolutionData, configuracaoLimites } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
 
 const Dashboard = () => {
@@ -14,6 +14,18 @@ const Dashboard = () => {
   const totalGanho = apostas.reduce((acc, a) => acc + a.valorGanho, 0);
   const saldoAtual = totalGanho - totalGasto;
   const totalApostas = apostas.length;
+
+  // Calcular gasto diário para alerta
+  const hoje = new Date();
+  const inicioDia = new Date(hoje.setHours(0, 0, 0, 0));
+  const gastoDiario = apostas
+    .filter(a => new Date(a.data) >= inicioDia)
+    .reduce((acc, a) => acc + a.valorApostado, 0);
+  const percentualDiario = (gastoDiario / configuracaoLimites.limiteDiario) * 100;
+
+  // Jogos e casas favoritos
+  const jogosFavoritos = jogos.filter(j => j.favorito).slice(0, 3);
+  const casasFavoritas = casas.filter(c => c.favorito).slice(0, 3);
 
   return (
     <Layout>
@@ -30,6 +42,19 @@ const Dashboard = () => {
           </Button>
         </Link>
       </div>
+
+      {/* Alerta de Limite */}
+      {percentualDiario >= configuracaoLimites.alertaPercentual && (
+        <div className="card-glass p-4 mb-6 border-l-4 border-yellow-500 bg-yellow-500/5">
+          <div className="flex items-center gap-3">
+            <AlertTriangle className="w-5 h-5 text-yellow-500" />
+            <p className="text-sm text-foreground">
+              <strong>Atenção:</strong> Você atingiu {percentualDiario.toFixed(0)}% do seu limite diário.
+              <Link to="/limites" className="text-primary ml-2 hover:underline">Ver limites →</Link>
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
@@ -64,6 +89,60 @@ const Dashboard = () => {
           className="delay-400"
         />
       </div>
+
+      {/* Quick Access - Favoritos */}
+      {(jogosFavoritos.length > 0 || casasFavoritas.length > 0) && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {jogosFavoritos.length > 0 && (
+            <div className="card-glass p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-foreground">🎮 Jogos Favoritos</h3>
+                <Link to="/favoritos" className="text-xs text-primary hover:underline">Ver todos</Link>
+              </div>
+              <div className="flex gap-3">
+                {jogosFavoritos.map(jogo => (
+                  <Link 
+                    key={jogo.id} 
+                    to={`/jogos/${jogo.id}`}
+                    className="flex-1 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors text-center group"
+                  >
+                    <span className="text-2xl block mb-1">{jogo.imagemPromocional}</span>
+                    <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors">
+                      {jogo.nome}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {casasFavoritas.length > 0 && (
+            <div className="card-glass p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-foreground">🏠 Casas Favoritas</h3>
+                <Link to="/favoritos" className="text-xs text-primary hover:underline">Ver todos</Link>
+              </div>
+              <div className="flex gap-3">
+                {casasFavoritas.map(casa => (
+                  <Link 
+                    key={casa.id} 
+                    to={`/casas/${casa.id}`}
+                    className="flex-1 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors text-center group"
+                  >
+                    <span className="text-2xl block mb-1">{casa.logo}</span>
+                    <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors">
+                      {casa.nome}
+                    </span>
+                    {casa.autorizadaGoverno && (
+                      <ShieldCheck className="w-3 h-3 text-primary mx-auto mt-1" />
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Charts and Recent Bets */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
