@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
-import { Building2, ExternalLink, TrendingUp, TrendingDown } from 'lucide-react';
+import { Building2, TrendingUp, TrendingDown, ExternalLink, Star, ShieldCheck, ShieldAlert } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { casas } from '@/data/mockData';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 const Casas = () => {
   const formatCurrency = (value: number) => {
@@ -12,80 +13,93 @@ const Casas = () => {
     }).format(value);
   };
 
-  const totalLucro = casas.reduce((acc, c) => acc + c.lucroTotal, 0);
-
   return (
     <Layout>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-bold text-foreground">Casas de Apostas</h1>
-        <p className="text-muted-foreground">
-          {casas.length} casas • Lucro total: {' '}
-          <span className={cn(totalLucro >= 0 ? 'text-primary' : 'text-destructive')}>
-            {formatCurrency(totalLucro)}
-          </span>
-        </p>
+        <h1 className="text-2xl lg:text-3xl font-bold text-foreground flex items-center gap-3">
+          <Building2 className="w-8 h-8 text-primary" />
+          Casas de Apostas
+        </h1>
+        <p className="text-muted-foreground">Gerencie suas casas de apostas</p>
       </div>
 
-      {/* List */}
-      <div className="space-y-4">
+      {/* Lista de Casas */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {casas.map((casa, index) => (
           <Link
             key={casa.id}
             to={`/casas/${casa.id}`}
-            className="card-glass p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-card/90 transition-all animate-slide-up"
-            style={{ animationDelay: `${index * 100}ms` }}
+            className="card-glass p-5 hover:border-primary/50 transition-all group animate-fade-in"
+            style={{ animationDelay: `${index * 50}ms` }}
           >
-            <div className="flex items-center gap-4">
-              <div className={cn(
-                'w-14 h-14 rounded-xl flex items-center justify-center',
-                casa.lucroTotal >= 0 ? 'bg-primary/20' : 'bg-destructive/20'
-              )}>
-                <Building2 className={cn(
-                  'w-7 h-7',
-                  casa.lucroTotal >= 0 ? 'text-primary' : 'text-destructive'
-                )} />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-foreground text-lg">{casa.nome}</h3>
-                  <a 
-                    href={casa.link} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center text-3xl shadow-lg">
+                  {casa.logo}
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Gasto: {formatCurrency(casa.totalGasto)} • Ganho: {formatCurrency(casa.totalGanho)}
-                </p>
+                <div>
+                  <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
+                    {casa.nome}
+                    {casa.favorito && (
+                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    )}
+                  </h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    {casa.autorizadaGoverno ? (
+                      <Badge className="text-xs bg-primary/10 text-primary gap-1">
+                        <ShieldCheck className="w-3 h-3" />
+                        Autorizada
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-xs text-yellow-500 border-yellow-500/50 gap-1">
+                        <ShieldAlert className="w-3 h-3" />
+                        Não autorizada
+                      </Badge>
+                    )}
+                  </div>
+                </div>
               </div>
+              <ExternalLink className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
 
-            <div className="flex items-center gap-4 ml-auto">
-              <div className="text-right">
-                <p className="text-sm text-muted-foreground">Lucro Total</p>
-                <div className="flex items-center gap-2">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-3 bg-muted/50 rounded-xl">
+                <p className="text-xs text-muted-foreground">Gasto</p>
+                <p className="font-semibold text-foreground text-sm">{formatCurrency(casa.totalGasto)}</p>
+              </div>
+              <div className="p-3 bg-muted/50 rounded-xl">
+                <p className="text-xs text-muted-foreground">Ganho</p>
+                <p className="font-semibold text-foreground text-sm">{formatCurrency(casa.totalGanho)}</p>
+              </div>
+              <div className={cn(
+                'p-3 rounded-xl',
+                casa.lucroTotal >= 0 ? 'bg-primary/10' : 'bg-destructive/10'
+              )}>
+                <p className="text-xs text-muted-foreground">Lucro</p>
+                <p className={cn(
+                  'font-semibold text-sm flex items-center gap-1',
+                  casa.lucroTotal >= 0 ? 'text-primary' : 'text-destructive'
+                )}>
                   {casa.lucroTotal >= 0 ? (
-                    <TrendingUp className="w-5 h-5 text-primary" />
+                    <TrendingUp className="w-3 h-3" />
                   ) : (
-                    <TrendingDown className="w-5 h-5 text-destructive" />
+                    <TrendingDown className="w-3 h-3" />
                   )}
-                  <p className={cn(
-                    'text-xl font-bold',
-                    casa.lucroTotal >= 0 ? 'text-primary' : 'text-destructive'
-                  )}>
-                    {casa.lucroTotal >= 0 ? '+' : ''}{formatCurrency(casa.lucroTotal)}
-                  </p>
-                </div>
+                  {formatCurrency(casa.lucroTotal)}
+                </p>
               </div>
             </div>
           </Link>
         ))}
       </div>
+
+      {casas.length === 0 && (
+        <div className="text-center py-12">
+          <Building2 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <p className="text-muted-foreground">Nenhuma casa cadastrada</p>
+        </div>
+      )}
     </Layout>
   );
 };

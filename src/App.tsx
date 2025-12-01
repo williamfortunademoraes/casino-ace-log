@@ -11,6 +11,10 @@ import Jogos from "./pages/Jogos";
 import JogoDetalhes from "./pages/JogoDetalhes";
 import Relatorios from "./pages/Relatorios";
 import Configuracoes from "./pages/Configuracoes";
+import Promocoes from "./pages/Promocoes";
+import CasasAutorizadas from "./pages/CasasAutorizadas";
+import Favoritos from "./pages/Favoritos";
+import Limites from "./pages/Limites";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +32,10 @@ const App = () => (
           <Route path="/casas/:id" element={<CasaDetalhes />} />
           <Route path="/jogos" element={<Jogos />} />
           <Route path="/jogos/:id" element={<JogoDetalhes />} />
+          <Route path="/promocoes" element={<Promocoes />} />
+          <Route path="/casas-autorizadas" element={<CasasAutorizadas />} />
+          <Route path="/favoritos" element={<Favoritos />} />
+          <Route path="/limites" element={<Limites />} />
           <Route path="/relatorios" element={<Relatorios />} />
           <Route path="/configuracoes" element={<Configuracoes />} />
           <Route path="*" element={<NotFound />} />
