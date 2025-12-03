@@ -15,6 +15,10 @@ import Promocoes from "./pages/Promocoes";
 import CasasAutorizadas from "./pages/CasasAutorizadas";
 import Favoritos from "./pages/Favoritos";
 import Limites from "./pages/Limites";
+import Calculadora from "./pages/Calculadora";
+import Comparador from "./pages/Comparador";
+import Auth from "./pages/Auth";
+import Perfil from "./pages/Perfil";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,11 +31,15 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/perfil" element={<Perfil />} />
           <Route path="/nova-aposta" element={<NovaAposta />} />
           <Route path="/casas" element={<Casas />} />
           <Route path="/casas/:id" element={<CasaDetalhes />} />
           <Route path="/jogos" element={<Jogos />} />
           <Route path="/jogos/:id" element={<JogoDetalhes />} />
+          <Route path="/calculadora" element={<Calculadora />} />
+          <Route path="/comparador" element={<Comparador />} />
           <Route path="/promocoes" element={<Promocoes />} />
           <Route path="/casas-autorizadas" element={<CasasAutorizadas />} />
           <Route path="/favoritos" element={<Favoritos />} />

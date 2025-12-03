@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Gamepad2, TrendingUp, TrendingDown, Wallet, Target } from 'lucide-react';
+import { ArrowLeft, Gamepad2, TrendingUp, TrendingDown, Wallet, Target, Percent } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import StatCard from '@/components/dashboard/StatCard';
 import LinePerformanceChart from '@/components/charts/LinePerformanceChart';
@@ -7,6 +7,8 @@ import { jogos, apostas, getApostaWithRelations } from '@/data/mockData';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { analisarRTPJogo, getRTPTeorico, getClassificacaoColor, getTendenciaIcon } from '@/utils/rtp';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const JogoDetalhes = () => {
   const { id } = useParams();
@@ -27,6 +29,10 @@ const JogoDetalhes = () => {
     .filter(a => a.jogoId === id)
     .map(getApostaWithRelations)
     .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
+
+  // RTP Analysis
+  const rtpAnalysis = analisarRTPJogo(jogo, apostasJogo);
+  const rtpTeorico = getRTPTeorico(jogo.categoria);
 
   // Generate performance data
   let acumulado = 0;
@@ -109,6 +115,58 @@ const JogoDetalhes = () => {
           trend="neutral"
         />
       </div>
+
+      {/* RTP Card */}
+      <Card className="card-glass mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Percent className="w-5 h-5 text-primary" />
+            Análise de RTP (Return to Player)
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="p-4 rounded-xl bg-muted/50 text-center">
+              <p className="text-sm text-muted-foreground mb-1">Seu RTP</p>
+              <p className={cn('text-2xl font-bold', getClassificacaoColor(rtpAnalysis.classificacao))}>
+                {rtpAnalysis.rtp.toFixed(1)}%
+              </p>
+            </div>
+            <div className="p-4 rounded-xl bg-muted/50 text-center">
+              <p className="text-sm text-muted-foreground mb-1">RTP Teórico</p>
+              <p className="text-2xl font-bold text-foreground">
+                {rtpTeorico ? `${rtpTeorico}%` : 'N/A'}
+              </p>
+            </div>
+            <div className="p-4 rounded-xl bg-muted/50 text-center">
+              <p className="text-sm text-muted-foreground mb-1">Tendência</p>
+              <p className="text-2xl font-bold text-foreground">
+                {getTendenciaIcon(rtpAnalysis.tendencia)} {rtpAnalysis.tendencia}
+              </p>
+            </div>
+            <div className="p-4 rounded-xl bg-muted/50 text-center">
+              <p className="text-sm text-muted-foreground mb-1">Classificação</p>
+              <p className={cn('text-2xl font-bold capitalize', getClassificacaoColor(rtpAnalysis.classificacao))}>
+                {rtpAnalysis.classificacao}
+              </p>
+            </div>
+          </div>
+
+          {rtpTeorico && (
+            <div className="mt-4 p-4 rounded-xl bg-muted/30">
+              <p className="text-sm text-muted-foreground">
+                {rtpAnalysis.rtp > rtpTeorico ? (
+                  <span className="text-primary">✅ Você está acima do RTP teórico em {(rtpAnalysis.rtp - rtpTeorico).toFixed(1)}%</span>
+                ) : rtpAnalysis.rtp === rtpTeorico ? (
+                  <span className="text-foreground">➡️ Você está exatamente no RTP teórico</span>
+                ) : (
+                  <span className="text-destructive">⚠️ Você está abaixo do RTP teórico em {(rtpTeorico - rtpAnalysis.rtp).toFixed(1)}%</span>
+                )}
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Chart and Bets */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

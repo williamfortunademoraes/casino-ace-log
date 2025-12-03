@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
-import { Wallet, TrendingUp, TrendingDown, Target, Plus, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { Wallet, TrendingUp, TrendingDown, Target, Plus, ShieldCheck, AlertTriangle, Calculator, Scale } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import StatCard from '@/components/dashboard/StatCard';
 import RecentBets from '@/components/dashboard/RecentBets';
 import ProfitChart from '@/components/charts/ProfitChart';
 import { apostas, casas, jogos, getApostaWithRelations, evolutionData, configuracaoLimites } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
+import { analisarRTPJogo, getClassificacaoColor } from '@/utils/rtp';
+import { cn } from '@/lib/utils';
 
 const Dashboard = () => {
   const apostasWithRelations = apostas.map(getApostaWithRelations);
@@ -100,18 +102,24 @@ const Dashboard = () => {
                 <Link to="/favoritos" className="text-xs text-primary hover:underline">Ver todos</Link>
               </div>
               <div className="flex gap-3">
-                {jogosFavoritos.map(jogo => (
-                  <Link 
-                    key={jogo.id} 
-                    to={`/jogos/${jogo.id}`}
-                    className="flex-1 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors text-center group"
-                  >
-                    <span className="text-2xl block mb-1">{jogo.imagemPromocional}</span>
-                    <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors">
-                      {jogo.nome}
-                    </span>
-                  </Link>
-                ))}
+                {jogosFavoritos.map(jogo => {
+                  const rtpAnalysis = analisarRTPJogo(jogo, apostas.filter(a => a.jogoId === jogo.id));
+                  return (
+                    <Link 
+                      key={jogo.id} 
+                      to={`/jogos/${jogo.id}`}
+                      className="flex-1 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors text-center group"
+                    >
+                      <span className="text-2xl block mb-1">{jogo.imagemPromocional}</span>
+                      <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors block">
+                        {jogo.nome}
+                      </span>
+                      <span className={cn('text-[10px]', getClassificacaoColor(rtpAnalysis.classificacao))}>
+                        RTP: {rtpAnalysis.rtp.toFixed(0)}%
+                      </span>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -143,6 +151,32 @@ const Dashboard = () => {
           )}
         </div>
       )}
+
+      {/* Quick Tools */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <Link to="/calculadora" className="card-glass p-4 hover:border-primary/50 transition-all group">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+              <Calculator className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h4 className="font-medium text-foreground group-hover:text-primary transition-colors">Calculadora</h4>
+              <p className="text-xs text-muted-foreground">Lucro, banca e rollover</p>
+            </div>
+          </div>
+        </Link>
+        <Link to="/comparador" className="card-glass p-4 hover:border-primary/50 transition-all group">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center">
+              <Scale className="w-5 h-5 text-accent" />
+            </div>
+            <div>
+              <h4 className="font-medium text-foreground group-hover:text-primary transition-colors">Comparador</h4>
+              <p className="text-xs text-muted-foreground">Compare suas casas</p>
+            </div>
+          </div>
+        </Link>
+      </div>
 
       {/* Charts and Recent Bets */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
