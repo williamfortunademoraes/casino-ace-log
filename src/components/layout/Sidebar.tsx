@@ -10,7 +10,10 @@ import {
   Gift,
   ShieldCheck,
   Star,
-  Bell
+  Bell,
+  Calculator,
+  Scale,
+  User
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -19,11 +22,14 @@ const navItems = [
   { icon: PlusCircle, label: 'Nova Aposta', path: '/nova-aposta' },
   { icon: Building2, label: 'Casas', path: '/casas' },
   { icon: Gamepad2, label: 'Jogos', path: '/jogos' },
+  { icon: Calculator, label: 'Calculadora', path: '/calculadora' },
+  { icon: Scale, label: 'Comparador', path: '/comparador' },
   { icon: Gift, label: 'Promoções', path: '/promocoes' },
   { icon: ShieldCheck, label: 'Casas Autorizadas', path: '/casas-autorizadas' },
   { icon: Star, label: 'Favoritos', path: '/favoritos' },
   { icon: BarChart3, label: 'Relatórios', path: '/relatorios' },
   { icon: Bell, label: 'Limites & Alertas', path: '/limites' },
+  { icon: User, label: 'Meu Perfil', path: '/perfil' },
   { icon: Settings, label: 'Configurações', path: '/configuracoes' },
 ];
 

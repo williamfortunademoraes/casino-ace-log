@@ -3,8 +3,9 @@ import { BarChart3, TrendingUp, Building2, LineChart } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import MonthlyProfitChart from '@/components/charts/MonthlyProfitChart';
 import ProfitChart from '@/components/charts/ProfitChart';
-import { jogos, casas, monthlyProfitData, evolutionData } from '@/data/mockData';
+import { jogos, casas, apostas, monthlyProfitData, evolutionData } from '@/data/mockData';
 import { cn } from '@/lib/utils';
+import { analisarRTPJogo, getClassificacaoColor } from '@/utils/rtp';
 
 type ReportTab = 'mensal' | 'jogos' | 'casas' | 'evolucao';
 
@@ -74,30 +75,40 @@ const Relatorios = () => {
                     <th className="text-right py-3 px-4 text-muted-foreground font-medium">Jogadas</th>
                     <th className="text-right py-3 px-4 text-muted-foreground font-medium">Gasto</th>
                     <th className="text-right py-3 px-4 text-muted-foreground font-medium">Ganho</th>
+                    <th className="text-right py-3 px-4 text-muted-foreground font-medium">RTP</th>
                     <th className="text-right py-3 px-4 text-muted-foreground font-medium">Lucro</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {jogosSorted.map((jogo, index) => (
-                    <tr key={jogo.id} className="table-row-hover border-b border-border/50">
-                      <td className="py-4 px-4 text-muted-foreground">{index + 1}</td>
-                      <td className="py-4 px-4 font-medium text-foreground">{jogo.nome}</td>
-                      <td className="py-4 px-4">
-                        <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">
-                          {jogo.categoria}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4 text-right text-foreground">{jogo.totalJogadas}</td>
-                      <td className="py-4 px-4 text-right text-foreground">{formatCurrency(jogo.totalGasto)}</td>
-                      <td className="py-4 px-4 text-right text-foreground">{formatCurrency(jogo.totalGanho)}</td>
-                      <td className={cn(
-                        'py-4 px-4 text-right font-semibold',
-                        jogo.lucroTotal >= 0 ? 'text-primary' : 'text-destructive'
-                      )}>
-                        {jogo.lucroTotal >= 0 ? '+' : ''}{formatCurrency(jogo.lucroTotal)}
-                      </td>
-                    </tr>
-                  ))}
+                  {jogosSorted.map((jogo, index) => {
+                    const rtpAnalysis = analisarRTPJogo(jogo, apostas.filter(a => a.jogoId === jogo.id));
+                    return (
+                      <tr key={jogo.id} className="table-row-hover border-b border-border/50">
+                        <td className="py-4 px-4 text-muted-foreground">{index + 1}</td>
+                        <td className="py-4 px-4 font-medium text-foreground">{jogo.nome}</td>
+                        <td className="py-4 px-4">
+                          <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">
+                            {jogo.categoria}
+                          </span>
+                        </td>
+                        <td className="py-4 px-4 text-right text-foreground">{jogo.totalJogadas}</td>
+                        <td className="py-4 px-4 text-right text-foreground">{formatCurrency(jogo.totalGasto)}</td>
+                        <td className="py-4 px-4 text-right text-foreground">{formatCurrency(jogo.totalGanho)}</td>
+                        <td className={cn(
+                          'py-4 px-4 text-right font-semibold',
+                          getClassificacaoColor(rtpAnalysis.classificacao)
+                        )}>
+                          {rtpAnalysis.rtp.toFixed(1)}%
+                        </td>
+                        <td className={cn(
+                          'py-4 px-4 text-right font-semibold',
+                          jogo.lucroTotal >= 0 ? 'text-primary' : 'text-destructive'
+                        )}>
+                          {jogo.lucroTotal >= 0 ? '+' : ''}{formatCurrency(jogo.lucroTotal)}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

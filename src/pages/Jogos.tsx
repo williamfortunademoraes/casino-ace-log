@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Gamepad2, TrendingUp, TrendingDown, Star } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
-import { jogos } from '@/data/mockData';
+import { jogos, apostas } from '@/data/mockData';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { analisarRTPJogo } from '@/utils/rtp';
+import RTPBadge from '@/components/rtp/RTPBadge';
 
 const Jogos = () => {
   const formatCurrency = (value: number) => {
@@ -95,7 +97,7 @@ const Jogos = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 mb-3">
               <div className="text-center p-2 bg-muted/30 rounded-lg">
                 <p className="text-xs text-muted-foreground">Gasto</p>
                 <p className="text-sm font-medium text-foreground">{formatCurrency(jogo.totalGasto)}</p>
@@ -104,6 +106,15 @@ const Jogos = () => {
                 <p className="text-xs text-muted-foreground">Ganho</p>
                 <p className="text-sm font-medium text-foreground">{formatCurrency(jogo.totalGanho)}</p>
               </div>
+            </div>
+
+            {/* RTP Badge */}
+            <div className="flex justify-center">
+              <RTPBadge 
+                analysis={analisarRTPJogo(jogo, apostas.filter(a => a.jogoId === jogo.id))} 
+                showDetails 
+                size="sm"
+              />
             </div>
           </Link>
         ))}
