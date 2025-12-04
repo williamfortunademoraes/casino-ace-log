@@ -1,82 +1,53 @@
 import { Link } from 'react-router-dom';
-import { 
-  TrendingUp, 
-  Shield, 
-  BarChart3, 
-  Gamepad2, 
-  Gift, 
-  Trophy,
-  ChevronRight,
-  Zap,
-  Lock,
-  Eye,
-  BookOpen,
-  Calculator,
-  Star
-} from 'lucide-react';
+import { TrendingUp, Shield, BarChart3, Gamepad2, Gift, Trophy, ChevronRight, Zap, Lock, Eye, BookOpen, Calculator, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-
-const features = [
-  {
-    icon: BarChart3,
-    title: 'Dashboard Inteligente',
-    description: 'Visualize sua banca, lucros e perdas em tempo real com gráficos detalhados.',
-    color: 'from-green-500 to-emerald-500',
-  },
-  {
-    icon: Gamepad2,
-    title: 'Controle de Jogos',
-    description: 'Acompanhe o desempenho em cada jogo e descubra quais são mais lucrativos.',
-    color: 'from-blue-500 to-cyan-500',
-  },
-  {
-    icon: Gift,
-    title: 'Promoções & Bônus',
-    description: 'Gerencie promoções, giros grátis e cashbacks das suas casas favoritas.',
-    color: 'from-purple-500 to-pink-500',
-  },
-  {
-    icon: Trophy,
-    title: 'Estatísticas RTP',
-    description: 'Calcule seu RTP real e compare com o teórico para tomar melhores decisões.',
-    color: 'from-yellow-500 to-orange-500',
-  },
-  {
-    icon: BookOpen,
-    title: 'Aprenda a Apostar',
-    description: 'Módulo educacional completo sobre gestão de banca, volatilidade e estratégias.',
-    color: 'from-pink-500 to-rose-500',
-  },
-  {
-    icon: Calculator,
-    title: 'Calculadoras',
-    description: 'Ferramentas para calcular lucros, rollover, odds e gerenciar sua banca.',
-    color: 'from-cyan-500 to-blue-500',
-  },
-];
-
-const securityFeatures = [
-  {
-    icon: Lock,
-    title: 'Dados Protegidos',
-    description: 'Suas informações são criptografadas e armazenadas com segurança.',
-  },
-  {
-    icon: Eye,
-    title: 'Privacidade Total',
-    description: 'Seus dados nunca são compartilhados com terceiros.',
-  },
-  {
-    icon: Shield,
-    title: 'Jogo Responsável',
-    description: 'Alertas de risco e limites para proteger você de perdas excessivas.',
-  },
-];
-
+const features = [{
+  icon: BarChart3,
+  title: 'Dashboard Inteligente',
+  description: 'Visualize sua banca, lucros e perdas em tempo real com gráficos detalhados.',
+  color: 'from-green-500 to-emerald-500'
+}, {
+  icon: Gamepad2,
+  title: 'Controle de Jogos',
+  description: 'Acompanhe o desempenho em cada jogo e descubra quais são mais lucrativos.',
+  color: 'from-blue-500 to-cyan-500'
+}, {
+  icon: Gift,
+  title: 'Promoções & Bônus',
+  description: 'Gerencie promoções, giros grátis e cashbacks das suas casas favoritas.',
+  color: 'from-purple-500 to-pink-500'
+}, {
+  icon: Trophy,
+  title: 'Estatísticas RTP',
+  description: 'Calcule seu RTP real e compare com o teórico para tomar melhores decisões.',
+  color: 'from-yellow-500 to-orange-500'
+}, {
+  icon: BookOpen,
+  title: 'Aprenda a Apostar',
+  description: 'Módulo educacional completo sobre gestão de banca, volatilidade e estratégias.',
+  color: 'from-pink-500 to-rose-500'
+}, {
+  icon: Calculator,
+  title: 'Calculadoras',
+  description: 'Ferramentas para calcular lucros, rollover, odds e gerenciar sua banca.',
+  color: 'from-cyan-500 to-blue-500'
+}];
+const securityFeatures = [{
+  icon: Lock,
+  title: 'Dados Protegidos',
+  description: 'Suas informações são criptografadas e armazenadas com segurança.'
+}, {
+  icon: Eye,
+  title: 'Privacidade Total',
+  description: 'Seus dados nunca são compartilhados com terceiros.'
+}, {
+  icon: Shield,
+  title: 'Jogo Responsável',
+  description: 'Alertas de risco e limites para proteger você de perdas excessivas.'
+}];
 const Landing = () => {
-  return (
-    <div className="min-h-screen bg-background overflow-hidden">
+  return <div className="min-h-screen bg-background overflow-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[128px] animate-pulse" />
@@ -134,7 +105,7 @@ const Landing = () => {
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/auth">
-              <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-xl shadow-primary/30 text-lg px-8">
+              <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-xl shadow-primary/30 text-lg px-8 bg-success text-secondary-foreground">
                 Começar Agora — É Grátis
                 <ChevronRight className="w-5 h-5 ml-2" />
               </Button>
@@ -178,11 +149,7 @@ const Landing = () => {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, index) => (
-              <Card 
-                key={index} 
-                className="group card-glass border-border/50 hover:border-primary/50 transition-all duration-300 hover:-translate-y-1"
-              >
+            {features.map((feature, index) => <Card key={index} className="group card-glass border-border/50 hover:border-primary/50 transition-all duration-300 hover:-translate-y-1">
                 <CardContent className="p-6">
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
                     <feature.icon className="w-6 h-6 text-white" />
@@ -190,8 +157,7 @@ const Landing = () => {
                   <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
                   <p className="text-muted-foreground text-sm">{feature.description}</p>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -215,8 +181,7 @@ const Landing = () => {
                   criptografia de ponta e nunca são compartilhadas com terceiros.
                 </p>
                 <div className="space-y-4">
-                  {securityFeatures.map((feature, index) => (
-                    <div key={index} className="flex items-start gap-4">
+                  {securityFeatures.map((feature, index) => <div key={index} className="flex items-start gap-4">
                       <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
                         <feature.icon className="w-5 h-5 text-green-400" />
                       </div>
@@ -224,8 +189,7 @@ const Landing = () => {
                         <h4 className="font-semibold mb-1">{feature.title}</h4>
                         <p className="text-sm text-muted-foreground">{feature.description}</p>
                       </div>
-                    </div>
-                  ))}
+                    </div>)}
                 </div>
               </div>
               
@@ -318,8 +282,6 @@ const Landing = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Landing;
