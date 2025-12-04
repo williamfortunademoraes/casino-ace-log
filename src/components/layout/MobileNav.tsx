@@ -14,7 +14,9 @@ import {
   Settings,
   Calculator,
   Scale,
-  User
+  User,
+  Layers,
+  BookOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -24,10 +26,12 @@ const navItems = [
   { icon: PlusCircle, label: 'Nova Aposta', path: '/nova-aposta' },
   { icon: Building2, label: 'Casas', path: '/casas' },
   { icon: Gamepad2, label: 'Jogos', path: '/jogos' },
+  { icon: Layers, label: 'Providers', path: '/providers' },
   { icon: Calculator, label: 'Calculadora', path: '/calculadora' },
   { icon: Scale, label: 'Comparador', path: '/comparador' },
   { icon: Gift, label: 'Promoções', path: '/promocoes' },
   { icon: ShieldCheck, label: 'Autorizadas', path: '/casas-autorizadas' },
+  { icon: BookOpen, label: 'Aprender', path: '/aprendizados' },
   { icon: Star, label: 'Favoritos', path: '/favoritos' },
   { icon: BarChart3, label: 'Relatórios', path: '/relatorios' },
   { icon: Bell, label: 'Limites', path: '/limites' },

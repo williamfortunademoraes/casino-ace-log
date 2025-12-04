@@ -4,16 +4,18 @@ import {
   PlusCircle, 
   Building2, 
   Gamepad2, 
-  BarChart3, 
-  Settings,
-  TrendingUp,
+  BarChart3,
   Gift,
-  ShieldCheck,
   Star,
+  TrendingUp,
+  ShieldCheck,
   Bell,
+  Settings,
   Calculator,
   Scale,
-  User
+  User,
+  Layers,
+  BookOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -22,14 +24,16 @@ const navItems = [
   { icon: PlusCircle, label: 'Nova Aposta', path: '/nova-aposta' },
   { icon: Building2, label: 'Casas', path: '/casas' },
   { icon: Gamepad2, label: 'Jogos', path: '/jogos' },
+  { icon: Layers, label: 'Providers', path: '/providers' },
   { icon: Calculator, label: 'Calculadora', path: '/calculadora' },
   { icon: Scale, label: 'Comparador', path: '/comparador' },
   { icon: Gift, label: 'Promoções', path: '/promocoes' },
   { icon: ShieldCheck, label: 'Casas Autorizadas', path: '/casas-autorizadas' },
+  { icon: BookOpen, label: 'Aprendizados', path: '/aprendizados' },
   { icon: Star, label: 'Favoritos', path: '/favoritos' },
   { icon: BarChart3, label: 'Relatórios', path: '/relatorios' },
-  { icon: Bell, label: 'Limites & Alertas', path: '/limites' },
-  { icon: User, label: 'Meu Perfil', path: '/perfil' },
+  { icon: Bell, label: 'Limites', path: '/limites' },
+  { icon: User, label: 'Perfil', path: '/perfil' },
   { icon: Settings, label: 'Configurações', path: '/configuracoes' },
 ];
 

@@ -20,6 +20,8 @@ export interface Jogo {
   totalGanho: number;
   lucroTotal: number;
   favorito?: boolean;
+  providerId?: string;
+  rtpTeorico?: number;
 }
 
 export type Resultado = 'Vitória' | 'Derrota' | 'Cashout';
@@ -95,4 +97,43 @@ export interface ConfiguracaoLimites {
   modoPausa: boolean;
   pausaAte?: Date;
   perdasConsecutivasAlerta: number;
+}
+
+// NEW: Provider type
+export interface Provider {
+  id: string;
+  nome: string;
+  descricao: string;
+  logo?: string;
+  totalJogos: number;
+  totalGasto: number;
+  totalGanho: number;
+  lucroTotal: number;
+  rtpMedio: number;
+  jogoMaisLucrativo?: string;
+  melhoresHorarios?: string[];
+  tendencia: 'alta' | 'estavel' | 'baixa';
+}
+
+// NEW: Lesson type for learning module
+export interface Licao {
+  id: string;
+  titulo: string;
+  descricao: string;
+  categoria: 'gestao_banca' | 'rtp' | 'volatilidade' | 'estrategia' | 'psicologia' | 'erros_comuns';
+  conteudo: string;
+  duracaoMinutos: number;
+  concluida: boolean;
+  ordem: number;
+}
+
+export interface ProgressoAprendizado {
+  totalLicoes: number;
+  licoesConcluidas: number;
+  porcentagemConcluida: number;
+  categoriasProgresso: {
+    categoria: string;
+    total: number;
+    concluidas: number;
+  }[];
 }
