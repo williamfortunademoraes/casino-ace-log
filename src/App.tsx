@@ -19,6 +19,8 @@ import Calculadora from "./pages/Calculadora";
 import Comparador from "./pages/Comparador";
 import Auth from "./pages/Auth";
 import Perfil from "./pages/Perfil";
+import Providers from "./pages/Providers";
+import Aprendizados from "./pages/Aprendizados";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +40,8 @@ const App = () => (
           <Route path="/casas/:id" element={<CasaDetalhes />} />
           <Route path="/jogos" element={<Jogos />} />
           <Route path="/jogos/:id" element={<JogoDetalhes />} />
+          <Route path="/providers" element={<Providers />} />
+          <Route path="/aprendizados" element={<Aprendizados />} />
           <Route path="/calculadora" element={<Calculadora />} />
           <Route path="/comparador" element={<Comparador />} />
           <Route path="/promocoes" element={<Promocoes />} />
