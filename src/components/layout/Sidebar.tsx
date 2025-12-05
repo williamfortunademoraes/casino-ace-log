@@ -18,7 +18,8 @@ import {
   BookOpen,
   Crown,
   Sparkles,
-  Trophy
+  Trophy,
+  Shield
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -31,10 +32,11 @@ const navItems = [
   { icon: Crown, label: 'VIP', path: '/vip' },
   { icon: Sparkles, label: 'Gamificação', path: '/gamificacao' },
   { icon: Trophy, label: 'Ranking', path: '/ranking' },
+  { icon: Shield, label: 'Alertas', path: '/alertas' },
   { icon: Calculator, label: 'Calculadora', path: '/calculadora' },
   { icon: Scale, label: 'Comparador', path: '/comparador' },
   { icon: Gift, label: 'Promoções', path: '/promocoes' },
-  { icon: ShieldCheck, label: 'Casas Autorizadas', path: '/casas-autorizadas' },
+  { icon: ShieldCheck, label: 'Autorizadas', path: '/casas-autorizadas' },
   { icon: BookOpen, label: 'Aprendizados', path: '/aprendizados' },
   { icon: Star, label: 'Favoritos', path: '/favoritos' },
   { icon: BarChart3, label: 'Relatórios', path: '/relatorios' },
