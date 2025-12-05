@@ -22,6 +22,9 @@ import Auth from "./pages/Auth";
 import Perfil from "./pages/Perfil";
 import Providers from "./pages/Providers";
 import Aprendizados from "./pages/Aprendizados";
+import VIP from "./pages/VIP";
+import Gamificacao from "./pages/Gamificacao";
+import Ranking from "./pages/Ranking";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +47,9 @@ const App = () => (
           <Route path="/jogos/:id" element={<JogoDetalhes />} />
           <Route path="/providers" element={<Providers />} />
           <Route path="/aprendizados" element={<Aprendizados />} />
+          <Route path="/vip" element={<VIP />} />
+          <Route path="/gamificacao" element={<Gamificacao />} />
+          <Route path="/ranking" element={<Ranking />} />
           <Route path="/calculadora" element={<Calculadora />} />
           <Route path="/comparador" element={<Comparador />} />
           <Route path="/promocoes" element={<Promocoes />} />
