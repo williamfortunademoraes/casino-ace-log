@@ -137,3 +137,68 @@ export interface ProgressoAprendizado {
     concluidas: number;
   }[];
 }
+
+// VIP System
+export type NivelVIP = 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond' | 'elite_black';
+
+export interface UserVIP {
+  id: string;
+  nivel: NivelVIP;
+  xpAtual: number;
+  xpProximoNivel: number;
+  beneficios: string[];
+  diasAtivos: number;
+  volumeTotal: number;
+}
+
+export interface BeneficioVIP {
+  nivel: NivelVIP;
+  nome: string;
+  descricao: string;
+  icone: string;
+}
+
+// Gamification
+export interface Missao {
+  id: string;
+  titulo: string;
+  descricao: string;
+  tipo: 'diaria' | 'semanal' | 'especial';
+  xpRecompensa: number;
+  progresso: number;
+  meta: number;
+  concluida: boolean;
+  icone: string;
+}
+
+export interface Conquista {
+  id: string;
+  titulo: string;
+  descricao: string;
+  icone: string;
+  xpRecompensa: number;
+  desbloqueada: boolean;
+  dataDesbloqueio?: Date;
+  raridade: 'comum' | 'raro' | 'epico' | 'lendario';
+}
+
+export interface UserGamificacao {
+  xpTotal: number;
+  nivel: number;
+  missoesConcluidas: number;
+  conquistasDesbloqueadas: number;
+}
+
+// Ranking
+export interface RankingUser {
+  id: string;
+  username: string;
+  avatar?: string;
+  nivel: number;
+  nivelVIP: NivelVIP;
+  xp: number;
+  lucroPercentual: number;
+  consistencia: number;
+  missoesConcluidas: number;
+  posicao: number;
+}

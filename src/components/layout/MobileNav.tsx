@@ -16,7 +16,10 @@ import {
   Scale,
   User,
   Layers,
-  BookOpen
+  BookOpen,
+  Crown,
+  Sparkles,
+  Trophy
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -27,6 +30,9 @@ const navItems = [
   { icon: Building2, label: 'Casas', path: '/casas' },
   { icon: Gamepad2, label: 'Jogos', path: '/jogos' },
   { icon: Layers, label: 'Providers', path: '/providers' },
+  { icon: Crown, label: 'VIP', path: '/vip' },
+  { icon: Sparkles, label: 'Gamificação', path: '/gamificacao' },
+  { icon: Trophy, label: 'Ranking', path: '/ranking' },
   { icon: Calculator, label: 'Calculadora', path: '/calculadora' },
   { icon: Scale, label: 'Comparador', path: '/comparador' },
   { icon: Gift, label: 'Promoções', path: '/promocoes' },
