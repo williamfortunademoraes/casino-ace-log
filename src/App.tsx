@@ -25,6 +25,7 @@ import Aprendizados from "./pages/Aprendizados";
 import VIP from "./pages/VIP";
 import Gamificacao from "./pages/Gamificacao";
 import Ranking from "./pages/Ranking";
+import Alertas from "./pages/Alertas";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -50,6 +51,7 @@ const App = () => (
           <Route path="/vip" element={<VIP />} />
           <Route path="/gamificacao" element={<Gamificacao />} />
           <Route path="/ranking" element={<Ranking />} />
+          <Route path="/alertas" element={<Alertas />} />
           <Route path="/calculadora" element={<Calculadora />} />
           <Route path="/comparador" element={<Comparador />} />
           <Route path="/promocoes" element={<Promocoes />} />

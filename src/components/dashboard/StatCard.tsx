@@ -2,18 +2,22 @@ import { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
-interface StatCardProps {
+export interface StatCardProps {
   title: string;
   value: string | number;
   icon: ReactNode;
   trend?: 'up' | 'down' | 'neutral';
   subtitle?: string;
   className?: string;
+  isPercentage?: boolean;
 }
 
-const StatCard = ({ title, value, icon, trend, subtitle, className }: StatCardProps) => {
+const StatCard = ({ title, value, icon, trend, subtitle, className, isPercentage }: StatCardProps) => {
   const formatValue = (val: string | number) => {
     if (typeof val === 'number') {
+      if (isPercentage) {
+        return `${val.toFixed(1)}%`;
+      }
       return new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL',
