@@ -4,6 +4,7 @@ import Layout from '@/components/layout/Layout';
 import StatCard from '@/components/dashboard/StatCard';
 import RecentBets from '@/components/dashboard/RecentBets';
 import ProfitChart from '@/components/charts/ProfitChart';
+import { AIInsights } from '@/components/insights/AIInsights';
 import { apostas, casas, jogos, getApostaWithRelations, evolutionData, configuracaoLimites } from '@/data/mockData';
 import { mockProviders } from '@/data/providersData';
 import { mockAlertas } from '@/data/alertsData';
@@ -308,6 +309,11 @@ const Dashboard = () => {
             </div>
           </div>
         </Link>
+      </div>
+
+      {/* AI Insights */}
+      <div className="mb-6">
+        <AIInsights />
       </div>
 
       {/* Charts and Recent Bets */}
