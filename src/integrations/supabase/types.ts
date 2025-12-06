@@ -14,16 +14,234 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      apostas: {
+        Row: {
+          casa_id: string | null
+          created_at: string | null
+          data: string | null
+          id: string
+          jogo_id: string | null
+          lucro: number | null
+          observacao: string | null
+          resultado: string | null
+          screenshot_url: string | null
+          user_id: string
+          valor_apostado: number
+          valor_ganho: number
+        }
+        Insert: {
+          casa_id?: string | null
+          created_at?: string | null
+          data?: string | null
+          id?: string
+          jogo_id?: string | null
+          lucro?: number | null
+          observacao?: string | null
+          resultado?: string | null
+          screenshot_url?: string | null
+          user_id: string
+          valor_apostado: number
+          valor_ganho?: number
+        }
+        Update: {
+          casa_id?: string | null
+          created_at?: string | null
+          data?: string | null
+          id?: string
+          jogo_id?: string | null
+          lucro?: number | null
+          observacao?: string | null
+          resultado?: string | null
+          screenshot_url?: string | null
+          user_id?: string
+          valor_apostado?: number
+          valor_ganho?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "apostas_casa_id_fkey"
+            columns: ["casa_id"]
+            isOneToOne: false
+            referencedRelation: "casas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "apostas_jogo_id_fkey"
+            columns: ["jogo_id"]
+            isOneToOne: false
+            referencedRelation: "jogos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      casas: {
+        Row: {
+          autorizada_governo: boolean | null
+          created_at: string | null
+          favorito: boolean | null
+          id: string
+          link: string | null
+          logo: string | null
+          lucro_total: number | null
+          nome: string
+          total_ganho: number | null
+          total_gasto: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          autorizada_governo?: boolean | null
+          created_at?: string | null
+          favorito?: boolean | null
+          id?: string
+          link?: string | null
+          logo?: string | null
+          lucro_total?: number | null
+          nome: string
+          total_ganho?: number | null
+          total_gasto?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          autorizada_governo?: boolean | null
+          created_at?: string | null
+          favorito?: boolean | null
+          id?: string
+          link?: string | null
+          logo?: string | null
+          lucro_total?: number | null
+          nome?: string
+          total_ganho?: number | null
+          total_gasto?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      jogos: {
+        Row: {
+          categoria: string
+          created_at: string | null
+          favorito: boolean | null
+          id: string
+          imagem_promocional: string | null
+          lucro_total: number | null
+          nome: string
+          provider: string | null
+          rtp_teorico: number | null
+          total_ganho: number | null
+          total_gasto: number | null
+          total_jogadas: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          categoria: string
+          created_at?: string | null
+          favorito?: boolean | null
+          id?: string
+          imagem_promocional?: string | null
+          lucro_total?: number | null
+          nome: string
+          provider?: string | null
+          rtp_teorico?: number | null
+          total_ganho?: number | null
+          total_gasto?: number | null
+          total_jogadas?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          categoria?: string
+          created_at?: string | null
+          favorito?: boolean | null
+          id?: string
+          imagem_promocional?: string | null
+          lucro_total?: number | null
+          nome?: string
+          provider?: string | null
+          rtp_teorico?: number | null
+          total_ganho?: number | null
+          total_gasto?: number | null
+          total_jogadas?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          dias_ativos: number | null
+          id: string
+          nivel: number | null
+          updated_at: string | null
+          username: string | null
+          vip_nivel: string | null
+          xp: number | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          dias_ativos?: number | null
+          id: string
+          nivel?: number | null
+          updated_at?: string | null
+          username?: string | null
+          vip_nivel?: string | null
+          xp?: number | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          dias_ativos?: number | null
+          id?: string
+          nivel?: number | null
+          updated_at?: string | null
+          username?: string | null
+          vip_nivel?: string | null
+          xp?: number | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +368,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
