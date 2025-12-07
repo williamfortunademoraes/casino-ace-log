@@ -1,17 +1,29 @@
 import { Link } from 'react-router-dom';
-import { Building2, TrendingUp, TrendingDown, ExternalLink, Star, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { Building2, TrendingUp, TrendingDown, ExternalLink, Star, ShieldCheck, ShieldAlert, Loader2 } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
-import { casas } from '@/data/mockData';
+import { useCasas } from '@/hooks/useCasas';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 
 const Casas = () => {
+  const { casas, isLoading } = useCasas();
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
     }).format(value);
   };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -36,7 +48,7 @@ const Casas = () => {
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center text-3xl shadow-lg">
-                  {casa.logo}
+                  {casa.logo || '🏠'}
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
@@ -46,7 +58,7 @@ const Casas = () => {
                     )}
                   </h3>
                   <div className="flex items-center gap-2 mt-1">
-                    {casa.autorizadaGoverno ? (
+                    {casa.autorizada_governo ? (
                       <Badge className="text-xs bg-primary/10 text-primary gap-1">
                         <ShieldCheck className="w-3 h-3" />
                         Autorizada
@@ -66,27 +78,27 @@ const Casas = () => {
             <div className="grid grid-cols-3 gap-3">
               <div className="p-3 bg-muted/50 rounded-xl">
                 <p className="text-xs text-muted-foreground">Gasto</p>
-                <p className="font-semibold text-foreground text-sm">{formatCurrency(casa.totalGasto)}</p>
+                <p className="font-semibold text-foreground text-sm">{formatCurrency(casa.total_gasto)}</p>
               </div>
               <div className="p-3 bg-muted/50 rounded-xl">
                 <p className="text-xs text-muted-foreground">Ganho</p>
-                <p className="font-semibold text-foreground text-sm">{formatCurrency(casa.totalGanho)}</p>
+                <p className="font-semibold text-foreground text-sm">{formatCurrency(casa.total_ganho)}</p>
               </div>
               <div className={cn(
                 'p-3 rounded-xl',
-                casa.lucroTotal >= 0 ? 'bg-primary/10' : 'bg-destructive/10'
+                casa.lucro_total >= 0 ? 'bg-primary/10' : 'bg-destructive/10'
               )}>
                 <p className="text-xs text-muted-foreground">Lucro</p>
                 <p className={cn(
                   'font-semibold text-sm flex items-center gap-1',
-                  casa.lucroTotal >= 0 ? 'text-primary' : 'text-destructive'
+                  casa.lucro_total >= 0 ? 'text-primary' : 'text-destructive'
                 )}>
-                  {casa.lucroTotal >= 0 ? (
+                  {casa.lucro_total >= 0 ? (
                     <TrendingUp className="w-3 h-3" />
                   ) : (
                     <TrendingDown className="w-3 h-3" />
                   )}
-                  {formatCurrency(casa.lucroTotal)}
+                  {formatCurrency(casa.lucro_total)}
                 </p>
               </div>
             </div>
@@ -98,6 +110,7 @@ const Casas = () => {
         <div className="text-center py-12">
           <Building2 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
           <p className="text-muted-foreground">Nenhuma casa cadastrada</p>
+          <p className="text-sm text-muted-foreground mt-2">Registre sua primeira aposta para começar!</p>
         </div>
       )}
     </Layout>
