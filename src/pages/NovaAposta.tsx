@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CalendarIcon, Save } from 'lucide-react';
+import { CalendarIcon, Save, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Layout from '@/components/layout/Layout';
@@ -12,13 +12,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
-import { casas, jogos } from '@/data/mockData';
+import { useCasas } from '@/hooks/useCasas';
+import { useJogos } from '@/hooks/useJogos';
+import { useApostas } from '@/hooks/useApostas';
 import { Resultado } from '@/types';
 import { cn } from '@/lib/utils';
 
 const NovaAposta = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { casas, isLoading: loadingCasas, createCasa } = useCasas();
+  const { jogos, isLoading: loadingJogos, createJogo } = useJogos();
+  const { createAposta } = useApostas();
+  
   const [date, setDate] = useState<Date>(new Date());
   const [casaId, setCasaId] = useState('');
   const [jogoId, setJogoId] = useState('');
@@ -26,12 +32,47 @@ const NovaAposta = () => {
   const [valorGanho, setValorGanho] = useState('');
   const [resultado, setResultado] = useState<Resultado | ''>('');
   const [observacao, setObservacao] = useState('');
+  
+  // Estados para criar nova casa/jogo
+  const [showNewCasa, setShowNewCasa] = useState(false);
+  const [showNewJogo, setShowNewJogo] = useState(false);
+  const [newCasaNome, setNewCasaNome] = useState('');
+  const [newJogoNome, setNewJogoNome] = useState('');
+  const [newJogoCategoria, setNewJogoCategoria] = useState('');
 
   const lucro = valorGanho && valorApostado 
     ? parseFloat(valorGanho) - parseFloat(valorApostado) 
     : 0;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleCreateCasa = async () => {
+    if (!newCasaNome.trim()) return;
+    try {
+      const result = await createCasa.mutateAsync({ nome: newCasaNome });
+      setCasaId(result.id);
+      setShowNewCasa(false);
+      setNewCasaNome('');
+    } catch (error) {
+      // Error handled by hook
+    }
+  };
+
+  const handleCreateJogo = async () => {
+    if (!newJogoNome.trim() || !newJogoCategoria.trim()) return;
+    try {
+      const result = await createJogo.mutateAsync({ 
+        nome: newJogoNome,
+        categoria: newJogoCategoria,
+      });
+      setJogoId(result.id);
+      setShowNewJogo(false);
+      setNewJogoNome('');
+      setNewJogoCategoria('');
+    } catch (error) {
+      // Error handled by hook
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!casaId || !jogoId || !valorApostado || !resultado) {
@@ -43,14 +84,23 @@ const NovaAposta = () => {
       return;
     }
 
-    // Here we would save to the database
-    toast({
-      title: 'Aposta registrada!',
-      description: `Lucro: R$ ${lucro.toFixed(2)}`,
-    });
-
-    navigate('/');
+    try {
+      await createAposta.mutateAsync({
+        casa_id: casaId,
+        jogo_id: jogoId,
+        data: date,
+        valor_apostado: parseFloat(valorApostado),
+        valor_ganho: parseFloat(valorGanho) || 0,
+        resultado,
+        observacao: observacao || undefined,
+      });
+      navigate('/');
+    } catch (error) {
+      // Error handled by hook
+    }
   };
+
+  const categorias = ['Slots', 'Roleta', 'Blackjack', 'Poker', 'Crash', 'Esportes', 'Outros'];
 
   return (
     <Layout>
@@ -92,39 +142,96 @@ const NovaAposta = () => {
               </Popover>
             </div>
 
-            {/* Casa and Jogo */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Casa de Aposta *</Label>
-                <Select value={casaId} onValueChange={setCasaId}>
-                  <SelectTrigger className="input-dark">
-                    <SelectValue placeholder="Selecione a casa" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {casas.map((casa) => (
-                      <SelectItem key={casa.id} value={casa.id}>
-                        {casa.nome}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            {/* Casa */}
+            <div className="space-y-2">
+              <Label>Casa de Aposta *</Label>
+              {!showNewCasa ? (
+                <div className="flex gap-2">
+                  <Select value={casaId} onValueChange={setCasaId} disabled={loadingCasas}>
+                    <SelectTrigger className="input-dark flex-1">
+                      <SelectValue placeholder={loadingCasas ? 'Carregando...' : 'Selecione a casa'} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {casas.map((casa) => (
+                        <SelectItem key={casa.id} value={casa.id}>
+                          {casa.nome}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button type="button" variant="outline" size="icon" onClick={() => setShowNewCasa(true)}>
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <Input 
+                    placeholder="Nome da casa" 
+                    value={newCasaNome}
+                    onChange={(e) => setNewCasaNome(e.target.value)}
+                    className="input-dark"
+                  />
+                  <Button type="button" onClick={handleCreateCasa} disabled={createCasa.isPending}>
+                    Adicionar
+                  </Button>
+                  <Button type="button" variant="ghost" onClick={() => setShowNewCasa(false)}>
+                    Cancelar
+                  </Button>
+                </div>
+              )}
+            </div>
 
-              <div className="space-y-2">
-                <Label>Jogo *</Label>
-                <Select value={jogoId} onValueChange={setJogoId}>
-                  <SelectTrigger className="input-dark">
-                    <SelectValue placeholder="Selecione o jogo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {jogos.map((jogo) => (
-                      <SelectItem key={jogo.id} value={jogo.id}>
-                        {jogo.nome} ({jogo.categoria})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            {/* Jogo */}
+            <div className="space-y-2">
+              <Label>Jogo *</Label>
+              {!showNewJogo ? (
+                <div className="flex gap-2">
+                  <Select value={jogoId} onValueChange={setJogoId} disabled={loadingJogos}>
+                    <SelectTrigger className="input-dark flex-1">
+                      <SelectValue placeholder={loadingJogos ? 'Carregando...' : 'Selecione o jogo'} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {jogos.map((jogo) => (
+                        <SelectItem key={jogo.id} value={jogo.id}>
+                          {jogo.nome} ({jogo.categoria})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button type="button" variant="outline" size="icon" onClick={() => setShowNewJogo(true)}>
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <Input 
+                      placeholder="Nome do jogo" 
+                      value={newJogoNome}
+                      onChange={(e) => setNewJogoNome(e.target.value)}
+                      className="input-dark"
+                    />
+                    <Select value={newJogoCategoria} onValueChange={setNewJogoCategoria}>
+                      <SelectTrigger className="input-dark w-40">
+                        <SelectValue placeholder="Categoria" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categorias.map((cat) => (
+                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button type="button" onClick={handleCreateJogo} disabled={createJogo.isPending}>
+                      Adicionar
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={() => setShowNewJogo(false)}>
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Values */}
@@ -198,9 +305,13 @@ const NovaAposta = () => {
           </div>
 
           {/* Submit Button */}
-          <Button type="submit" className="btn-primary w-full flex items-center justify-center gap-2">
+          <Button 
+            type="submit" 
+            className="btn-primary w-full flex items-center justify-center gap-2"
+            disabled={createAposta.isPending}
+          >
             <Save className="w-5 h-5" />
-            Salvar Aposta
+            {createAposta.isPending ? 'Salvando...' : 'Salvar Aposta'}
           </Button>
         </form>
       </div>
