@@ -126,7 +126,7 @@ const Providers = () => {
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground mt-3">
-                  Horários com melhor desempenho histórico neste provider
+                  Horários com melhor desempenho histórico neste provedor
                 </p>
               </CardContent>
             </Card>
@@ -158,16 +158,16 @@ const Providers = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 {getTendenciaIcon(provider.tendencia)}
-                Tendência do Provider
+                Tendência do Provedor
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4">
                 {getTendenciaBadge(provider.tendencia)}
                 <p className="text-muted-foreground">
-                  {provider.tendencia === 'alta' && 'Seus resultados estão melhorando neste provider'}
-                  {provider.tendencia === 'baixa' && 'Seus resultados estão piorando neste provider'}
-                  {provider.tendencia === 'estavel' && 'Seus resultados estão estáveis neste provider'}
+                  {provider.tendencia === 'alta' && 'Seus resultados estão melhorando neste provedor'}
+                  {provider.tendencia === 'baixa' && 'Seus resultados estão piorando neste provedor'}
+                  {provider.tendencia === 'estavel' && 'Seus resultados estão estáveis neste provedor'}
                 </p>
               </div>
             </CardContent>
@@ -178,7 +178,7 @@ const Providers = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Gamepad2 className="w-5 h-5 text-primary" />
-                Jogos do Provider ({provider.totalJogos})
+                Jogos do Provedor ({provider.totalJogos})
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -211,13 +211,13 @@ const Providers = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold">Game Providers</h1>
+          <h1 className="text-2xl font-bold">Provedores de Jogos</h1>
           <p className="text-muted-foreground">Estatísticas por provedor de jogos</p>
         </div>
 
         {/* Search */}
         <Input
-          placeholder="Buscar provider..."
+          placeholder="Buscar provedor..."
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
           className="max-w-md"
@@ -227,7 +227,7 @@ const Providers = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="card-glass">
             <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">Total Providers</p>
+              <p className="text-sm text-muted-foreground">Total Provedores</p>
               <p className="text-2xl font-bold">{mockProviders.length}</p>
             </CardContent>
           </Card>
@@ -310,7 +310,7 @@ const Providers = () => {
 
         {providersFiltrados.length === 0 && (
           <div className="text-center py-12 text-muted-foreground">
-            Nenhum provider encontrado
+            Nenhum provedor encontrado
           </div>
         )}
       </div>
