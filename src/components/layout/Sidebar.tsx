@@ -19,16 +19,20 @@ import {
   Crown,
   Sparkles,
   Trophy,
-  Shield
+  Shield,
+  LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
   { icon: PlusCircle, label: 'Nova Aposta', path: '/nova-aposta' },
   { icon: Building2, label: 'Casas', path: '/casas' },
   { icon: Gamepad2, label: 'Jogos', path: '/jogos' },
-  { icon: Layers, label: 'Providers', path: '/providers' },
+  { icon: Layers, label: 'Provedores', path: '/providers' },
   { icon: Crown, label: 'VIP', path: '/vip' },
   { icon: Sparkles, label: 'Gamificação', path: '/gamificacao' },
   { icon: Trophy, label: 'Ranking', path: '/ranking' },
@@ -47,17 +51,43 @@ const navItems = [
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/auth');
+  };
+
+  const userInitials = user?.email 
+    ? user.email.substring(0, 2).toUpperCase() 
+    : 'U';
+
+  const userName = user?.user_metadata?.username || user?.email?.split('@')[0] || 'Usuário';
 
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col z-50">
       {/* Logo */}
-      <div className="flex items-center gap-3 mb-8">
+      <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/25">
           <TrendingUp className="w-7 h-7 text-primary-foreground" />
         </div>
         <div>
           <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Cassino</h1>
           <p className="text-xs text-muted-foreground font-medium">Tracker Pro</p>
+        </div>
+      </div>
+
+      {/* User Info */}
+      <div className="flex items-center gap-3 mb-6 p-3 rounded-xl bg-muted/50">
+        <Avatar className="h-10 w-10">
+          <AvatarFallback className="bg-primary/20 text-primary">
+            {userInitials}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-foreground truncate">{userName}</p>
+          <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
         </div>
       </div>
 
@@ -89,8 +119,15 @@ const Sidebar = () => {
         })}
       </nav>
 
-      {/* Footer */}
-      <div className="pt-4 border-t border-sidebar-border">
+      {/* Footer with Logout */}
+      <div className="pt-4 border-t border-sidebar-border space-y-3">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-destructive hover:bg-destructive/10 transition-colors"
+        >
+          <LogOut className="w-5 h-5" />
+          <span className="font-medium">Sair</span>
+        </button>
         <div className="px-3 py-2 rounded-xl bg-muted/50">
           <p className="text-xs text-muted-foreground text-center">
             v2.0.0 • Jogue com responsabilidade
