@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Search, Bell, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useGlobalSearch } from '@/hooks/useGlobalSearch';
+import SearchResults from './SearchResults';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,15 +17,31 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showResults, setShowResults] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { results } = useGlobalSearch(searchQuery);
+  const searchRef = useRef<HTMLDivElement>(null);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      // Navigate to search results or filter current page
-      console.log('Searching:', searchQuery);
-    }
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowResults(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setShowResults(e.target.value.length >= 2);
+  };
+
+  const handleSelectResult = () => {
+    setShowResults(false);
+    setSearchQuery('');
   };
 
   const handleLogout = async () => {
@@ -41,18 +59,22 @@ const Header = () => {
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 items-center justify-between px-4 lg:px-6">
         {/* Search */}
-        <form onSubmit={handleSearch} className="flex-1 max-w-md">
+        <div ref={searchRef} className="flex-1 max-w-md relative">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Buscar jogos, casas, apostas..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
+              onFocus={() => searchQuery.length >= 2 && setShowResults(true)}
               className="pl-10 bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-primary"
             />
           </div>
-        </form>
+          {showResults && searchQuery.length >= 2 && (
+            <SearchResults results={results} onSelect={handleSelectResult} />
+          )}
+        </div>
 
         {/* Actions */}
         <div className="flex items-center gap-2 ml-4">
