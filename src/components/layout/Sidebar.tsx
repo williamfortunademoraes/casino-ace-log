@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -12,24 +11,36 @@ import {
   Trophy,
   Crown,
   User,
-  HardDrive,
   Settings,
   LogOut,
   ChevronLeft,
   ChevronRight,
   TrendingUp,
   Sun,
-  Moon
+  Moon,
+  Bell,
+  Heart,
+  FileText,
+  AlertTriangle,
+  ChevronUp
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
+import { useSidebar } from '@/hooks/useSidebar';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import NotificationsPopover from './NotificationsPopover';
 
 const mainItems = [
@@ -45,12 +56,16 @@ const secondaryItems = [
   { icon: Calculator, label: 'Calculadora', path: '/calculadora' },
   { icon: BookOpen, label: 'Aprendizados', path: '/aprendizados' },
   { icon: Trophy, label: 'Ranking', path: '/ranking' },
-  { icon: Crown, label: 'VIP', path: '/vip' },
 ];
 
-const userItems = [
+const userMenuItems = [
   { icon: User, label: 'Perfil', path: '/perfil' },
-  { icon: HardDrive, label: 'Backup', path: '/configuracoes' },
+  { icon: Crown, label: 'VIP', path: '/vip' },
+  { icon: Target, label: 'Missões', path: '/gamificacao' },
+  { icon: Bell, label: 'Alertas', path: '/alertas' },
+  { icon: Heart, label: 'Favoritos', path: '/favoritos' },
+  { icon: FileText, label: 'Relatórios', path: '/relatorios' },
+  { icon: AlertTriangle, label: 'Limites', path: '/limites' },
   { icon: Settings, label: 'Configurações', path: '/configuracoes' },
 ];
 
@@ -74,7 +89,6 @@ const NavItem = ({ icon: Icon, label, path, isActive, isExpanded }: NavItemProps
         !isExpanded && 'justify-center'
       )}
     >
-      {/* Glow effect for active item */}
       {isActive && (
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-50" />
       )}
@@ -93,7 +107,6 @@ const NavItem = ({ icon: Icon, label, path, isActive, isExpanded }: NavItemProps
         {label}
       </span>
       
-      {/* Active indicator */}
       {isActive && (
         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full shadow-[0_0_10px_hsl(var(--primary))]" />
       )}
@@ -117,7 +130,7 @@ const NavItem = ({ icon: Icon, label, path, isActive, isExpanded }: NavItemProps
 };
 
 const Sidebar = () => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const { isExpanded, toggleSidebar } = useSidebar();
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
@@ -158,7 +171,7 @@ const Sidebar = () => {
           'transition-all duration-300',
           isExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0 overflow-hidden'
         )}>
-          <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent">
             Cassino
           </h1>
           <p className="text-[10px] text-muted-foreground font-medium -mt-1">Tracker Pro</p>
@@ -167,7 +180,7 @@ const Sidebar = () => {
 
       {/* Toggle Button */}
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={toggleSidebar}
         className="absolute -right-3 top-20 w-6 h-6 bg-card border border-border/50 rounded-full flex items-center justify-center hover:bg-muted transition-colors shadow-lg z-10"
       >
         {isExpanded ? (
@@ -176,25 +189,6 @@ const Sidebar = () => {
           <ChevronRight className="w-4 h-4 text-muted-foreground" />
         )}
       </button>
-
-      {/* User Info */}
-      <div className={cn(
-        'flex items-center gap-3 mx-3 mt-4 p-2.5 rounded-xl bg-muted/30 border border-border/20',
-        !isExpanded && 'justify-center p-2'
-      )}>
-        <Avatar className="h-9 w-9 shrink-0">
-          <AvatarFallback className="bg-primary/20 text-primary text-sm font-semibold">
-            {userInitials}
-          </AvatarFallback>
-        </Avatar>
-        <div className={cn(
-          'flex-1 min-w-0 transition-all duration-300',
-          isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'
-        )}>
-          <p className="text-sm font-medium text-foreground truncate">{userName}</p>
-          <p className="text-[11px] text-muted-foreground truncate">{user?.email}</p>
-        </div>
-      </div>
 
       {/* Navigation Sections */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
@@ -236,23 +230,13 @@ const Sidebar = () => {
           ))}
         </div>
 
-        {/* User Section */}
+        {/* Theme Toggle & Notifications */}
         <div className="space-y-1">
           {isExpanded && (
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground/70 font-semibold px-3 mb-2">
-              Conta
+              Preferências
             </p>
           )}
-          {userItems.map((item) => (
-            <NavItem
-              key={item.path + item.label}
-              icon={item.icon}
-              label={item.label}
-              path={item.path}
-              isActive={isActive(item.path)}
-              isExpanded={isExpanded}
-            />
-          ))}
           
           {/* Notifications */}
           <NotificationsPopover isExpanded={isExpanded} />
@@ -290,37 +274,72 @@ const Sidebar = () => {
         </div>
       </nav>
 
-      {/* Footer */}
-      <div className="p-3 border-t border-sidebar-border space-y-2">
-        {/* Logout Button */}
-        <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>
-            <button
+      {/* User Menu at Bottom */}
+      <div className="p-3 border-t border-sidebar-border">
+        <DropdownMenu>
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className={cn(
+                    'w-full flex items-center gap-3 p-2.5 rounded-xl bg-muted/30 border border-border/20 hover:bg-muted/50 transition-all duration-300',
+                    !isExpanded && 'justify-center p-2'
+                  )}
+                >
+                  <Avatar className="h-9 w-9 shrink-0">
+                    <AvatarFallback className="bg-primary/20 text-primary text-sm font-semibold">
+                      {userInitials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className={cn(
+                    'flex-1 min-w-0 text-left transition-all duration-300',
+                    isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'
+                  )}>
+                    <p className="text-sm font-medium text-foreground truncate">{userName}</p>
+                    <p className="text-[11px] text-muted-foreground truncate">{user?.email}</p>
+                  </div>
+                  {isExpanded && (
+                    <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0" />
+                  )}
+                </button>
+              </DropdownMenuTrigger>
+            </TooltipTrigger>
+            {!isExpanded && (
+              <TooltipContent side="right" className="bg-card border-border">
+                {userName}
+              </TooltipContent>
+            )}
+          </Tooltip>
+          
+          <DropdownMenuContent 
+            side="top" 
+            align={isExpanded ? "start" : "center"}
+            className="w-56 bg-card border-border mb-2"
+          >
+            {userMenuItems.map((item) => (
+              <DropdownMenuItem 
+                key={item.path + item.label}
+                onClick={() => navigate(item.path)}
+                className="gap-3 cursor-pointer"
+              >
+                <item.icon className="w-4 h-4" />
+                <span>{item.label}</span>
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem 
               onClick={handleLogout}
-              className={cn(
-                'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-destructive hover:bg-destructive/10 transition-all duration-300',
-                !isExpanded && 'justify-center'
-              )}
+              className="gap-3 cursor-pointer text-destructive focus:text-destructive"
             >
-              <LogOut className="w-5 h-5 shrink-0" />
-              <span className={cn(
-                'font-medium text-sm transition-all duration-300',
-                isExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0 overflow-hidden'
-              )}>
-                Sair
-              </span>
-            </button>
-          </TooltipTrigger>
-          {!isExpanded && (
-            <TooltipContent side="right" className="bg-card border-border">
-              Sair
-            </TooltipContent>
-          )}
-        </Tooltip>
+              <LogOut className="w-4 h-4" />
+              <span>Sair</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Version */}
         {isExpanded && (
-          <div className="px-3 py-2 rounded-lg bg-muted/20">
+          <div className="px-3 py-2 mt-2 rounded-lg bg-muted/20">
             <p className="text-[10px] text-muted-foreground text-center">
               v2.0.0 • Jogue com responsabilidade
             </p>

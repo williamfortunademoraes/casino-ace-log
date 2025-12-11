@@ -2,12 +2,16 @@ import { ReactNode } from 'react';
 import Sidebar from './Sidebar';
 import MobileNav from './MobileNav';
 import Header from './Header';
+import { useSidebar } from '@/hooks/useSidebar';
+import { cn } from '@/lib/utils';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
+  const { isExpanded } = useSidebar();
+
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop Sidebar */}
@@ -16,7 +20,10 @@ const Layout = ({ children }: LayoutProps) => {
       </div>
       
       {/* Main Content */}
-      <div className="lg:ml-64 min-h-screen pb-24 lg:pb-0 transition-all duration-300">
+      <div className={cn(
+        'min-h-screen pb-24 lg:pb-0 transition-all duration-300',
+        isExpanded ? 'lg:ml-64' : 'lg:ml-[72px]'
+      )}>
         {/* Header with Search */}
         <Header />
         
