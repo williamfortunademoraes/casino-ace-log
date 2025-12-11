@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
+import { SidebarProvider } from "@/hooks/useSidebar";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Landing from "./pages/Landing";
 import Index from "./pages/Index";
@@ -36,40 +37,42 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/dashboard" element={<Index />} />
-              <Route path="/perfil" element={<Perfil />} />
-              <Route path="/nova-aposta" element={<NovaAposta />} />
-              <Route path="/casas" element={<Casas />} />
-              <Route path="/casas/:id" element={<CasaDetalhes />} />
-              <Route path="/jogos" element={<Jogos />} />
-              <Route path="/jogos/:id" element={<JogoDetalhes />} />
-              <Route path="/providers" element={<Providers />} />
-              <Route path="/aprendizados" element={<Aprendizados />} />
-              <Route path="/vip" element={<VIP />} />
-              <Route path="/gamificacao" element={<Gamificacao />} />
-              <Route path="/ranking" element={<Ranking />} />
-              <Route path="/alertas" element={<Alertas />} />
-              <Route path="/calculadora" element={<Calculadora />} />
-              <Route path="/comparador" element={<Comparador />} />
-              <Route path="/promocoes" element={<Promocoes />} />
-              <Route path="/casas-autorizadas" element={<CasasAutorizadas />} />
-              <Route path="/favoritos" element={<Favoritos />} />
-              <Route path="/limites" element={<Limites />} />
-              <Route path="/relatorios" element={<Relatorios />} />
-              <Route path="/configuracoes" element={<Configuracoes />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
+      <SidebarProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/dashboard" element={<Index />} />
+                <Route path="/perfil" element={<Perfil />} />
+                <Route path="/nova-aposta" element={<NovaAposta />} />
+                <Route path="/casas" element={<Casas />} />
+                <Route path="/casas/:id" element={<CasaDetalhes />} />
+                <Route path="/jogos" element={<Jogos />} />
+                <Route path="/jogos/:id" element={<JogoDetalhes />} />
+                <Route path="/providers" element={<Providers />} />
+                <Route path="/aprendizados" element={<Aprendizados />} />
+                <Route path="/vip" element={<VIP />} />
+                <Route path="/gamificacao" element={<Gamificacao />} />
+                <Route path="/ranking" element={<Ranking />} />
+                <Route path="/alertas" element={<Alertas />} />
+                <Route path="/calculadora" element={<Calculadora />} />
+                <Route path="/comparador" element={<Comparador />} />
+                <Route path="/promocoes" element={<Promocoes />} />
+                <Route path="/casas-autorizadas" element={<CasasAutorizadas />} />
+                <Route path="/favoritos" element={<Favoritos />} />
+                <Route path="/limites" element={<Limites />} />
+                <Route path="/relatorios" element={<Relatorios />} />
+                <Route path="/configuracoes" element={<Configuracoes />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </SidebarProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
