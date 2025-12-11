@@ -13,21 +13,24 @@ import {
   Crown,
   User,
   HardDrive,
-  Palette,
   Settings,
   LogOut,
   ChevronLeft,
   ChevronRight,
-  TrendingUp
+  TrendingUp,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import NotificationsPopover from './NotificationsPopover';
 
 const mainItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
@@ -48,7 +51,6 @@ const secondaryItems = [
 const userItems = [
   { icon: User, label: 'Perfil', path: '/perfil' },
   { icon: HardDrive, label: 'Backup', path: '/configuracoes' },
-  { icon: Palette, label: 'Tema', path: '/configuracoes' },
   { icon: Settings, label: 'Configurações', path: '/configuracoes' },
 ];
 
@@ -119,6 +121,7 @@ const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = async () => {
     await signOut();
@@ -139,13 +142,13 @@ const Sidebar = () => {
   return (
     <aside 
       className={cn(
-        'fixed left-0 top-0 h-full bg-[#0C0F14] border-r border-border/30 flex flex-col z-50 transition-all duration-300 ease-in-out',
+        'fixed left-0 top-0 h-full bg-sidebar border-r border-sidebar-border flex flex-col z-50 transition-all duration-300 ease-in-out',
         isExpanded ? 'w-64' : 'w-[72px]'
       )}
     >
       {/* Logo */}
       <div className={cn(
-        'flex items-center gap-3 p-4 border-b border-border/30',
+        'flex items-center gap-3 p-4 border-b border-sidebar-border',
         !isExpanded && 'justify-center'
       )}>
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-[0_0_20px_hsl(var(--primary)/0.4)]">
@@ -250,11 +253,45 @@ const Sidebar = () => {
               isExpanded={isExpanded}
             />
           ))}
+          
+          {/* Notifications */}
+          <NotificationsPopover isExpanded={isExpanded} />
+          
+          {/* Theme Toggle */}
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <button
+                onClick={toggleTheme}
+                className={cn(
+                  'group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 w-full',
+                  'text-muted-foreground hover:text-foreground hover:bg-muted/50',
+                  !isExpanded && 'justify-center'
+                )}
+              >
+                {theme === 'dark' ? (
+                  <Sun className="w-5 h-5 shrink-0 transition-all duration-300 group-hover:text-warning group-hover:drop-shadow-[0_0_6px_hsl(var(--warning)/0.5)]" />
+                ) : (
+                  <Moon className="w-5 h-5 shrink-0 transition-all duration-300 group-hover:text-primary group-hover:drop-shadow-[0_0_6px_hsl(var(--primary)/0.5)]" />
+                )}
+                <span className={cn(
+                  'font-medium text-sm whitespace-nowrap transition-all duration-300',
+                  isExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0 overflow-hidden'
+                )}>
+                  {theme === 'dark' ? 'Tema Claro' : 'Tema Escuro'}
+                </span>
+              </button>
+            </TooltipTrigger>
+            {!isExpanded && (
+              <TooltipContent side="right" className="bg-card border-border">
+                {theme === 'dark' ? 'Tema Claro' : 'Tema Escuro'}
+              </TooltipContent>
+            )}
+          </Tooltip>
         </div>
       </nav>
 
       {/* Footer */}
-      <div className="p-3 border-t border-border/30 space-y-2">
+      <div className="p-3 border-t border-sidebar-border space-y-2">
         {/* Logout Button */}
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
