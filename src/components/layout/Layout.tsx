@@ -16,7 +16,7 @@ const Layout = ({ children }: LayoutProps) => {
       </div>
       
       {/* Main Content */}
-      <div className="lg:ml-64 min-h-screen pb-24 lg:pb-0">
+      <div className="lg:ml-64 min-h-screen pb-24 lg:pb-0 transition-all duration-300">
         {/* Header with Search */}
         <Header />
         
