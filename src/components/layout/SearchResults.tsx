@@ -22,8 +22,8 @@ const typeLabels = {
 const SearchResults = ({ results, onSelect }: SearchResultsProps) => {
   if (results.length === 0) {
     return (
-      <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg p-4 z-50">
-        <p className="text-muted-foreground text-sm text-center">
+      <div className="p-8 text-center">
+        <p className="text-muted-foreground text-sm">
           Nenhum resultado encontrado
         </p>
       </div>
@@ -31,7 +31,7 @@ const SearchResults = ({ results, onSelect }: SearchResultsProps) => {
   }
 
   return (
-    <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg overflow-hidden z-50 max-h-80 overflow-y-auto">
+    <div className="divide-y divide-border">
       {results.map((result) => {
         const Icon = typeIcons[result.type];
         return (
@@ -39,7 +39,7 @@ const SearchResults = ({ results, onSelect }: SearchResultsProps) => {
             key={`${result.type}-${result.id}`}
             to={result.link}
             onClick={onSelect}
-            className="flex items-center gap-3 p-3 hover:bg-muted/50 transition-colors border-b border-border last:border-b-0"
+            className="flex items-center gap-3 p-3 hover:bg-muted/50 transition-colors"
           >
             <div className="p-2 rounded-lg bg-muted">
               <Icon className="h-4 w-4 text-primary" />
