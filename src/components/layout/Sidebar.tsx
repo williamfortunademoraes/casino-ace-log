@@ -22,13 +22,15 @@ import {
   Heart,
   FileText,
   AlertTriangle,
-  ChevronUp
+  ChevronUp,
+  Wrench,
+  Sliders
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
 import { useSidebar } from '@/hooks/useSidebar';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Tooltip,
   TooltipContent,
@@ -40,8 +42,11 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
 import NotificationsPopover from './NotificationsPopover';
+import SearchDialog from './SearchDialog';
 
 const mainItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
@@ -66,7 +71,13 @@ const userMenuItems = [
   { icon: Heart, label: 'Favoritos', path: '/favoritos' },
   { icon: FileText, label: 'Relatórios', path: '/relatorios' },
   { icon: AlertTriangle, label: 'Limites', path: '/limites' },
-  { icon: Settings, label: 'Configurações', path: '/configuracoes' },
+];
+
+const toolsMenuItems = [
+  { icon: Calculator, label: 'Calculadora', path: '/calculadora' },
+  { icon: BookOpen, label: 'Aprendizados', path: '/aprendizados' },
+  { icon: Trophy, label: 'Ranking', path: '/ranking' },
+  { icon: TrendingUp, label: 'Comparador', path: '/comparador' },
 ];
 
 interface NavItemProps {
@@ -146,10 +157,35 @@ const Sidebar = () => {
     : 'U';
 
   const userName = user?.user_metadata?.username || user?.email?.split('@')[0] || 'Usuário';
+  const userAvatar = user?.user_metadata?.avatar_url;
 
   const isActive = (path: string) => {
     return location.pathname === path || 
       (path !== '/' && location.pathname.startsWith(path));
+  };
+
+  const renderAvatar = () => {
+    if (userAvatar?.startsWith('emoji:')) {
+      const parts = userAvatar.split(':');
+      const emoji = parts[2];
+      const bg = parts[3];
+      return (
+        <Avatar className="h-9 w-9 shrink-0">
+          <div className={cn('w-full h-full flex items-center justify-center bg-gradient-to-br text-lg', bg)}>
+            {emoji}
+          </div>
+        </Avatar>
+      );
+    }
+
+    return (
+      <Avatar className="h-9 w-9 shrink-0">
+        <AvatarImage src={userAvatar || undefined} />
+        <AvatarFallback className="bg-primary/20 text-primary text-sm font-semibold">
+          {userInitials}
+        </AvatarFallback>
+      </Avatar>
+    );
   };
 
   return (
@@ -190,8 +226,16 @@ const Sidebar = () => {
         )}
       </button>
 
+      {/* Search */}
+      <div className="px-3 pt-4">
+        <SearchDialog isExpanded={isExpanded} />
+      </div>
+
       {/* Navigation Sections */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+      <nav className={cn(
+        'flex-1 overflow-y-auto px-3 py-4 space-y-6',
+        'scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/30'
+      )}>
         {/* Main Section */}
         <div className="space-y-1">
           {isExpanded && (
@@ -230,7 +274,7 @@ const Sidebar = () => {
           ))}
         </div>
 
-        {/* Theme Toggle & Notifications */}
+        {/* Preferences Section */}
         <div className="space-y-1">
           {isExpanded && (
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground/70 font-semibold px-3 mb-2">
@@ -286,11 +330,7 @@ const Sidebar = () => {
                     !isExpanded && 'justify-center p-2'
                   )}
                 >
-                  <Avatar className="h-9 w-9 shrink-0">
-                    <AvatarFallback className="bg-primary/20 text-primary text-sm font-semibold">
-                      {userInitials}
-                    </AvatarFallback>
-                  </Avatar>
+                  {renderAvatar()}
                   <div className={cn(
                     'flex-1 min-w-0 text-left transition-all duration-300',
                     isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'
@@ -316,16 +356,69 @@ const Sidebar = () => {
             align={isExpanded ? "start" : "center"}
             className="w-56 bg-card border-border mb-2"
           >
-            {userMenuItems.map((item) => (
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium">{userName}</p>
+                <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            
+            <DropdownMenuGroup>
+              {userMenuItems.map((item) => (
+                <DropdownMenuItem 
+                  key={item.path + item.label}
+                  onClick={() => navigate(item.path)}
+                  className="gap-3 cursor-pointer"
+                >
+                  <item.icon className="w-4 h-4" />
+                  <span>{item.label}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+            
+            <DropdownMenuSeparator />
+            
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="text-xs text-muted-foreground font-normal flex items-center gap-2">
+                <Wrench className="w-3 h-3" />
+                Ferramentas
+              </DropdownMenuLabel>
+              {toolsMenuItems.map((item) => (
+                <DropdownMenuItem 
+                  key={item.path + item.label + 'tools'}
+                  onClick={() => navigate(item.path)}
+                  className="gap-3 cursor-pointer"
+                >
+                  <item.icon className="w-4 h-4" />
+                  <span>{item.label}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+            
+            <DropdownMenuSeparator />
+            
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="text-xs text-muted-foreground font-normal flex items-center gap-2">
+                <Sliders className="w-3 h-3" />
+                Preferências
+              </DropdownMenuLabel>
               <DropdownMenuItem 
-                key={item.path + item.label}
-                onClick={() => navigate(item.path)}
+                onClick={() => navigate('/configuracoes')}
                 className="gap-3 cursor-pointer"
               >
-                <item.icon className="w-4 h-4" />
-                <span>{item.label}</span>
+                <Settings className="w-4 h-4" />
+                <span>Configurações</span>
               </DropdownMenuItem>
-            ))}
+              <DropdownMenuItem 
+                onClick={toggleTheme}
+                className="gap-3 cursor-pointer"
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                <span>{theme === 'dark' ? 'Tema Claro' : 'Tema Escuro'}</span>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            
             <DropdownMenuSeparator />
             <DropdownMenuItem 
               onClick={handleLogout}
